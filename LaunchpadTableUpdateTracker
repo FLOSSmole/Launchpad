@@ -29,5 +29,5 @@ I created a table called lpd_indexes: (It did not show the SQL for the creation 
     ALTER TABLE `lpd_indexes` CHANGE `datasource_id` `datasource_id` INT(11) NOT NULL;
     ALTER TABLE `lpd_indexes` CHANGE `name` `name` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
     ALTER TABLE `lpd_indexes` CHANGE `html` `html` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
-
+    ALTER TABLE `lpd_indexes` ADD `date_collected` DATETIME NOT NULL ;
     
