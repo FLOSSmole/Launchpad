@@ -25,5 +25,9 @@ I changed the lpd_projects table:
     ALTER TABLE `lpd_projects` CHANGE `security_contact` `security_contact` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
     ALTER TABLE `lpd_projects` CHANGE `translation_focus` `translation_focus` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
     
-    
+I created a table called lpd_indexes: (It did not show the SQL for the creation of the table so I updated it so we had some lines of code to base off of)
+    ALTER TABLE `lpd_indexes` CHANGE `datasource_id` `datasource_id` INT(11) NOT NULL;
+    ALTER TABLE `lpd_indexes` CHANGE `name` `name` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+    ALTER TABLE `lpd_indexes` CHANGE `html` `html` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
     
