@@ -1,5 +1,5 @@
-I changed the lpd_projects table:
-  - So the values were in utf8_general_ci
+-- I changed the lpd_projects table:
+  -- So the values were in utf8_general_ci
     ALTER TABLE `lpd_projects` CHANGE `name` `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
     ALTER TABLE `lpd_projects` CHANGE `display_name` `display_name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
     ALTER TABLE `lpd_projects` CHANGE `web_link` `web_link` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
@@ -25,12 +25,16 @@ I changed the lpd_projects table:
     ALTER TABLE `lpd_projects` CHANGE `security_contact` `security_contact` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
     ALTER TABLE `lpd_projects` CHANGE `translation_focus` `translation_focus` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
   
-  - So active was a VARCHAR and matched the value thats in the html
+  -- So active was a VARCHAR and matched the value thats in the html
     ALTER TABLE `lpd_projects` CHANGE `active` `active` VARCHAR(5) NULL DEFAULT NULL;
     
-I created a table called lpd_indexes: (It did not show the SQL for the creation of the table so I updated it so we had some lines of code to base off of)
-    ALTER TABLE `lpd_indexes` CHANGE `datasource_id` `datasource_id` INT(11) NOT NULL;
-    ALTER TABLE `lpd_indexes` CHANGE `name` `name` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
-    ALTER TABLE `lpd_indexes` CHANGE `html` `html` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
-    ALTER TABLE `lpd_indexes` ADD `date_collected` DATETIME NOT NULL ;
+-- I created a table called lpd_indexes: (It did not show the SQL for the creation of the table so I updated it so we had some lines of code to base off of)
+CREATE TABLE IF NOT EXISTS `lpd_indexes` (
+  `datasource_id` int(11) NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `html` mediumtext CHARACTER SET utf8 NOT NULL,
+  `date_collected` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
     
+ALTER TABLE `lpd_indexes`
+ ADD PRIMARY KEY (`datasource_id`,`name`);
