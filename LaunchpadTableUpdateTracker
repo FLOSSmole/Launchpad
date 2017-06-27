@@ -29,6 +29,9 @@
     ALTER TABLE `lpd_projects` CHANGE `active` `active` VARCHAR(10) NULL DEFAULT NULL;
     ALTER TABLE `lpd_projects` CHANGE `commercial_subscription_is_due` `commercial_subscription_is_due` VARCHAR(10) NULL DEFAULT NULL;
     ALTER TABLE `lpd_projects` CHANGE `qualifies_for_free_hosting` `qualifies_for_free_hosting` VARCHAR(10) NULL DEFAULT NULL;
+    ALTER TABLE `lpd_projects` CHANGE `active` `active` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+    ALTER TABLE `lpd_projects` CHANGE `commercial_subscription_is_due` `commercial_subscription_is_due` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+    ALTER TABLE `lpd_projects` CHANGE `qualifies_for_free_hosting` `qualifies_for_free_hosting` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
     
 -- I created a table called lpd_indexes: 
 CREATE TABLE IF NOT EXISTS `lpd_indexes` (
