@@ -40,19 +40,21 @@ try:
 except ImportError:
     import urllib2
 
+datasource_id = sys.argv[1]
+
 # establish database connection: SYR
 try:
     db = pymysql.connect(host='flossdata.syr.edu',
-                         user='',
-                         passwd='',
-                         db='',
+                         user='cfrankel',
+                         passwd='Marco1997',
+                         db='test',
                          use_unicode=True,
                          charset="utf8mb4")
     cursor = db.cursor()
 except pymysql.Error as err:
     print(err)
 
-selectQuery = 'SELECT datasource_id, name, web_link FROM lpd_projects'
+selectQuery = 'SELECT name, web_link FROM lpd_projects'
 
 insertQuery = 'INSERT INTO lpd_indexes (datasource_id, \
                                          name, \
@@ -72,9 +74,8 @@ try:
     listOfProjects = cursor.fetchall()
     
     for project in listOfProjects:
-        datasource_id = project[0]
-        name = project[1]
-        url = project[2]
+        name = project[0]
+        url = project[1]
         print('working on', name)
         
         req = urllib2.Request(url, headers=hdr)
@@ -90,7 +91,3 @@ try:
         except pymysql.Error as err:
             print(err)
             db.rollback()
-    
-    
-    
-    
