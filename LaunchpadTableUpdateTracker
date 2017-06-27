@@ -32,7 +32,8 @@
     ALTER TABLE `lpd_projects` CHANGE `active` `active` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
     ALTER TABLE `lpd_projects` CHANGE `commercial_subscription_is_due` `commercial_subscription_is_due` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
     ALTER TABLE `lpd_projects` CHANGE `qualifies_for_free_hosting` `qualifies_for_free_hosting` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-    
+    ALTER TABLE `lpd_projects` CHANGE `summary` `summary` MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
 -- I created a table called lpd_indexes: 
 CREATE TABLE IF NOT EXISTS `lpd_indexes` (
   `datasource_id` int(11) NOT NULL,
@@ -43,6 +44,7 @@ CREATE TABLE IF NOT EXISTS `lpd_indexes` (
     
 ALTER TABLE `lpd_indexes`
  ADD PRIMARY KEY (`datasource_id`,`name`);
+ ALTER TABLE `lpd_indexes` CHANGE `html` `html` MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
  
  -- Altered lpd_licenses to be utf8_general_ci
  CREATE TABLE IF NOT EXISTS `lpd_licenses` (
