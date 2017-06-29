@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `lpd_milestones` (
   `name` varchar(255) CHARACTER SET utf8 NOT NULL,
   `project_name` varchar(255) CHARACTER SET utf8 NOT NULL,
   `title` varchar(255) CHARACTER SET utf32 DEFAULT NULL,
-  `is_active` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `is_active` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `summary` mediumtext CHARACTER SET utf8,
   `code_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `date_targeted` datetime DEFAULT NULL,
