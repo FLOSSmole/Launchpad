@@ -28,7 +28,7 @@
 # python 2LaunchpadIndexTable.py <datasource_id> <password>
 #
 # purpose:
-# inserts datasource id, name, html, milestoneUrl, milestoneHtml to indexes table
+# inserts datasource id, name, and html to indexes table
 ################################################################
 
 import re
@@ -61,8 +61,9 @@ insertQuery = 'INSERT INTO lpd_indexes (datasource_id, \
                                          html, \
                                          milestoneUrl, \
                                          milestoneHtml, \
+                                         milestoneIsActiveUrl, \
                                          date_collected) \
-            VALUES(%s, %s, %s, %s, %s, now())'
+            VALUES(%s, %s, %s, %s, %s, %s, now())'
 
 hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -74,12 +75,12 @@ hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML,
 try:
     cursor.execute(selectQuery)
     listOfProjects = cursor.fetchall()
-    
+
     for project in listOfProjects:
         name = project[0]
         url = project[1]
         print('working on', name)
-        
+
         req = urllib2.Request(url, headers=hdr)
         projectHtml = urllib2.urlopen(req).read()
 
@@ -87,6 +88,8 @@ try:
 
         req2 = urllib2.Request(milestoneUrl, headers=hdr)
         milestoneHtml = urllib2.urlopen(req2).read()
+
+        milestoneIsActiveUrl = 'https://launchpad.net/api/devel/' + name +'/active_milestones'
         
         try:
             cursor.execute(insertQuery,
@@ -94,7 +97,8 @@ try:
                         name,
                         projectHtml,
                         milestoneUrl,
-                        milestoneHtml))
+                        milestoneHtml,
+                        milestoneIsActiveUrl))
             db.commit()
             print(name, " inserted into indexes table!\n")
         except pymysql.Error as err:
