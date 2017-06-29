@@ -82,4 +82,6 @@ CREATE TABLE IF NOT EXISTS `lpd_milestones` (
 ALTER TABLE `lpd_milestones`
  ADD PRIMARY KEY (`datasource_id`,`name`,`project_name`);
  
- ALTER TABLE `lpd_milestones` ADD `series` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL , ADD `date_released` DATETIME NOT NULL ;
+ALTER TABLE `lpd_milestones` ADD `series` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL , ADD `date_released` DATETIME NOT NULL ;
+ALTER TABLE `lpd_milestones` CHANGE `date_targeted` `date_targeted` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `date_released` `date_released` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
+
