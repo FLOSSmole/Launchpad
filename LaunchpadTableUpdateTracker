@@ -120,6 +120,6 @@ ALTER TABLE `lpd_releases` CHANGE `project_name` `project_name` VARCHAR(100) CHA
 ALTER TABLE `lpd_releases` CHANGE `release_notes` `release_notes` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `lpd_releases` CHANGE `changelog` `changelog` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
-
+ALTER TABLE `lpd_releases` ADD `html` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
 
 .
