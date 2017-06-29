@@ -109,3 +109,17 @@ ALTER TABLE `lpd_official_bug_tags`
 -- lpd programming_language table
 ALTER TABLE `lpd_programming_language` CHANGE `programming_language` `programming_language` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 ALTER TABLE `lpd_programming_language` CHANGE `name` `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+
+-- lpd release table
+ALTER TABLE `lpd_releases` CHANGE `display_name` `display_name` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `lpd_releases` CHANGE `title` `title` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `lpd_releases` CHANGE `milestone` `milestone` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `lpd_releases` CHANGE `version` `version` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `lpd_releases` CHANGE `project_name` `project_name` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `lpd_releases` CHANGE `release_notes` `release_notes` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `lpd_releases` CHANGE `changelog` `changelog` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
+
+
+.
