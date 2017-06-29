@@ -86,3 +86,23 @@ ALTER TABLE `lpd_milestones`
 ALTER TABLE `lpd_milestones` ADD `series` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL , ADD `date_released` DATETIME NOT NULL ;
 ALTER TABLE `lpd_milestones` CHANGE `date_targeted` `date_targeted` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `date_released` `date_released` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
 
+
+-- lpd bug tracker table
+CREATE TABLE IF NOT EXISTS `lpd_official_bug_tags` (
+  `datasource_id` int(11) NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `official_bug_tag` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `last_updated` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `lpd_official_bug_tags`
+--
+ALTER TABLE `lpd_official_bug_tags`
+ ADD PRIMARY KEY (`datasource_id`,`name`,`official_bug_tag`);
+
+
