@@ -81,3 +81,5 @@ CREATE TABLE IF NOT EXISTS `lpd_milestones` (
 --
 ALTER TABLE `lpd_milestones`
  ADD PRIMARY KEY (`datasource_id`,`name`,`project_name`);
+ 
+ ALTER TABLE `lpd_milestones` ADD `series` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL , ADD `date_released` DATETIME NOT NULL ;
