@@ -28,7 +28,7 @@
 # python 2LaunchpadIndexTable.py <datasource_id> <password>
 #
 # purpose:
-# inserts datasource id, name, and html to indexes table
+# inserts datasource id, name, html, milestoneUrl, milestoneHtml to indexes table
 ################################################################
 
 import re
@@ -40,14 +40,14 @@ try:
 except ImportError:
     import urllib2
 
-datasource_id = sys.argv[1]
+datasource_id = '122' #sys.argv[1]
 
 # establish database connection: SYR
 try:
     db = pymysql.connect(host='flossdata.syr.edu',
-                         user='cfrankel',
-                         passwd='Marco1997',
-                         db='test',
+                         user='',
+                         passwd='',
+                         db='',
                          use_unicode=True,
                          charset="utf8mb4")
     cursor = db.cursor()
@@ -59,8 +59,10 @@ selectQuery = 'SELECT name, web_link FROM lpd_projects'
 insertQuery = 'INSERT INTO lpd_indexes (datasource_id, \
                                          name, \
                                          html, \
+                                         milestoneUrl, \
+                                         milestoneHtml, \
                                          date_collected) \
-            VALUES(%s, %s, %s, now())'
+            VALUES(%s, %s, %s, %s, %s, now())'
 
 hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -81,13 +83,23 @@ try:
         req = urllib2.Request(url, headers=hdr)
         projectHtml = urllib2.urlopen(req).read()
 
+        milestoneUrl = url + '/+milestones'
+
+        req2 = urllib2.Request(milestoneUrl, headers=hdr)
+        milestoneHtml = urllib2.urlopen(req2).read()
+        
         try:
             cursor.execute(insertQuery,
                        (datasource_id,
                         name,
-                        projectHtml))
+                        projectHtml,
+                        milestoneUrl,
+                        milestoneHtml))
             db.commit()
             print(name, " inserted into indexes table!\n")
         except pymysql.Error as err:
             print(err)
-            db.rollback()
+            db.rollback()    
+    
+except pymysql.Error as err:
+    print(err)
