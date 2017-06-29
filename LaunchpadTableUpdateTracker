@@ -106,3 +106,6 @@ ALTER TABLE `lpd_official_bug_tags`
  ADD PRIMARY KEY (`datasource_id`,`name`,`official_bug_tag`);
 
 
+-- lpd programming_language table
+ALTER TABLE `lpd_programming_language` CHANGE `programming_language` `programming_language` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `lpd_programming_language` CHANGE `name` `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
