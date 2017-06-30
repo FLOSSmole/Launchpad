@@ -48,7 +48,8 @@ ALTER TABLE `lpd_indexes`
  ALTER TABLE `lpd_indexes` ADD `milestoneHtml` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
  ALTER TABLE `lpd_indexes` ADD `milestoneUrl` VARCHAR(300) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
  ALTER TABLE `lpd_indexes` ADD `milestoneIsActiveUrl` VARCHAR(300) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
- 
+ ALTER TABLE `lpd_indexes` ADD `seriesUrl` VARCHAR(300) CHARACTER SET utf32 COLLATE utf32_general_ci NULL 
+ ALTER TABLE `lpd_indexes` ADD `seriesHtml` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
  -- Altered lpd_licenses to be utf8_general_ci
  CREATE TABLE IF NOT EXISTS `lpd_licenses` (
   `datasource_id` int(11) NOT NULL,
