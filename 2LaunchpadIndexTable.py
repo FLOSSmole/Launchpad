@@ -62,8 +62,10 @@ insertQuery = 'INSERT INTO lpd_indexes (datasource_id, \
                                          milestoneUrl, \
                                          milestoneHtml, \
                                          milestoneIsActiveUrl, \
+                                         seriesUrl, \
+                                         serieshtml, \
                                          date_collected) \
-            VALUES(%s, %s, %s, %s, %s, %s, now())'
+            VALUES(%s, %s, %s, %s, %s, %s, %s, %s, now())'
 
 hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -91,6 +93,11 @@ try:
 
         milestoneIsActiveUrl = 'https://launchpad.net/api/devel/' + name +'/active_milestones'
         
+        seriesUrl = url + '/+series'
+
+        req3 = urllib2.Request(seriesUrl, headers=hdr)
+        seriesHtml = urllib2.urlopen(req3).read()
+
         try:
             cursor.execute(insertQuery,
                        (datasource_id,
@@ -98,7 +105,9 @@ try:
                         projectHtml,
                         milestoneUrl,
                         milestoneHtml,
-                        milestoneIsActiveUrl))
+                        milestoneIsActiveUrl,
+                        seriesUrl,
+                        seriesHtml))
             db.commit()
             print(name, " inserted into indexes table!\n")
         except pymysql.Error as err:
