@@ -35,10 +35,6 @@ import re
 import sys
 import pymysql
 from bs4 import BeautifulSoup
-try:
-    import urllib.request as urllib2
-except ImportError:
-    import urllib2
 
 datasource_id = '122'  # sys.argv[1]
 
