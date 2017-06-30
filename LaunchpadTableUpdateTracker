@@ -24,7 +24,7 @@
     ALTER TABLE `lpd_projects` CHANGE `registrant` `registrant` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
     ALTER TABLE `lpd_projects` CHANGE `security_contact` `security_contact` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
     ALTER TABLE `lpd_projects` CHANGE `translation_focus` `translation_focus` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-  
+  ALTER TABLE `lpd_projects` CHANGE `license_info` `license_info` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'license_info is deprecated. lpd_licenses has the license information';
   -- So active, commercial_subscription_is_due, qualifies_for_free_hosting was a VARCHAR and matched the value thats in the html
     ALTER TABLE `lpd_projects` CHANGE `active` `active` VARCHAR(10) NULL DEFAULT NULL;
     ALTER TABLE `lpd_projects` CHANGE `commercial_subscription_is_due` `commercial_subscription_is_due` VARCHAR(10) NULL DEFAULT NULL;
