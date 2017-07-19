@@ -42,7 +42,10 @@ except ImportError:
     import urllib2
 
 datasource_id = '272'
-
+dbpw = sys.argv[1]
+dbhost = 'flossdata.syr.edu'
+dbuser = 'megan'
+dbschema = 'launchpad'
 
 def insert():
     try:
@@ -57,12 +60,12 @@ def insert():
         print(err)
         db.rollback()
 
-# establish database connection: SYR
+
 try:
-    db = pymysql.connect(host='flossdata.syr.edu',
-                         user='',
-                         passwd='',
-                         db='',
+    db = pymysql.connect(host=dbhost,
+                         user=dbuser,
+                         passwd=dbpw,
+                         db=dbschema,
                          use_unicode=True,
                          charset="utf8mb4")
     cursor = db.cursor()
