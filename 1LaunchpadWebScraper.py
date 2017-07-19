@@ -86,9 +86,7 @@ hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML,
        'Accept-Language': 'en-US,en;q=0.8',
        'Connection': 'keep-alive'}
 
-numResults = 'of\s*(.*?)\s*results'
-results = re.findall(numResults, str(soup))[0]
-
+results = 2 
 num = 0
 i = 1
 
@@ -99,6 +97,8 @@ while num < int(results):
     listOfProjectHtml = urllib2.urlopen(req).read()
 
     soup = BeautifulSoup(listOfProjectHtml, 'html.parser')
+    numResults = 'of\s*(.*?)\s*results'
+    results = re.findall(numResults, str(soup))[0]
 
     table =soup.find('table', id = 'product-listing')
 
