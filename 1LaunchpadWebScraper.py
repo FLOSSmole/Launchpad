@@ -41,11 +41,11 @@ try:
 except ImportError:
     import urllib2
 
-datasource_id = '272'
+datasource_id = ''
 dbpw = sys.argv[1]
-dbhost = 'flossdata.syr.edu'
-dbuser = 'megan'
-dbschema = 'launchpad'
+dbhost = ''
+dbuser = ''
+dbschema = ''
 
 def insert():
     try:
