@@ -56,6 +56,8 @@ except pymysql.Error as err:
 
 selectQuery = 'SELECT name, web_link FROM lpd_projects'
 
+selectIndex = 'SELECT name FROM lpd_indexes WHERE dataource_id = %s'
+
 insertQuery = 'INSERT INTO lpd_indexes (datasource_id, \
                                          name, \
                                          html, \
@@ -74,45 +76,57 @@ hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML,
        'Accept-Language': 'en-US,en;q=0.8',
        'Connection': 'keep-alive'}
 
+projectsCollected = []
+
 try:
+    cursor.execute(selecIndex,(datasource_id))
+    listOfIndex = cursor.fetchall()
+    for index in listOfIndex:
+        projName = index[0]
+        projectsCollected.append(projName)
+            
     cursor.execute(selectQuery)
     listOfProjects = cursor.fetchall()
-
+    print(listOfProjects[0])
     for project in listOfProjects:
         name = project[0]
         url = project[1]
         print('working on', name)
 
-        req = urllib2.Request(url, headers=hdr)
-        projectHtml = urllib2.urlopen(req).read()
+        if name not in projectsCollected:
+            req = urllib2.Request(url, headers=hdr)
+            projectHtml = urllib2.urlopen(req).read()
 
-        milestoneUrl = url + '/+milestones'
+            milestoneUrl = url + '/+milestones'
 
-        req2 = urllib2.Request(milestoneUrl, headers=hdr)
-        milestoneHtml = urllib2.urlopen(req2).read()
+            req2 = urllib2.Request(milestoneUrl, headers=hdr)
+            milestoneHtml = urllib2.urlopen(req2).read()
 
-        milestoneIsActiveUrl = 'https://launchpad.net/api/devel/' + name +'/active_milestones'
+            milestoneIsActiveUrl = 'https://launchpad.net/api/devel/' + name +'/active_milestones'
         
-        seriesUrl = url + '/+series'
+            seriesUrl = url + '/+series'
 
-        req3 = urllib2.Request(seriesUrl, headers=hdr)
-        seriesHtml = urllib2.urlopen(req3).read()
+            req3 = urllib2.Request(seriesUrl, headers=hdr)
+            seriesHtml = urllib2.urlopen(req3).read()
 
-        try:
-            cursor.execute(insertQuery,
-                       (datasource_id,
-                        name,
-                        projectHtml,
-                        milestoneUrl,
-                        milestoneHtml,
-                        milestoneIsActiveUrl,
-                        seriesUrl,
-                        seriesHtml))
-            db.commit()
-            print(name, " inserted into indexes table!\n")
-        except pymysql.Error as err:
-            print(err)
-            db.rollback()    
+            try:
+                cursor.execute(insertQuery,
+                              (datasource_id,
+                               name,
+                               projectHtml,
+                               milestoneUrl,
+                               milestoneHtml,
+                               milestoneIsActiveUrl,
+                               seriesUrl,
+                               seriesHtml))
+                db.commit()
+                print(name, " inserted into indexes table!\n")
+            except pymysql.Error as err:
+                print(err)
+                db.rollback()    
     
 except pymysql.Error as err:
     print(err)
+
+except urllib2.HTTPError as herror:
+    print(herror)
