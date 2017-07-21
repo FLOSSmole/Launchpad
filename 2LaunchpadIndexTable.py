@@ -54,7 +54,7 @@ try:
 except pymysql.Error as err:
     print(err)
 
-selectQuery = 'SELECT p.name, p.url \
+selectQuery = 'SELECT p.name, p.web_link \
                FROM lpd_projects p \
                LEFT OUTER JOIN lpd_indexes i \
                ON p.name = i.name \
