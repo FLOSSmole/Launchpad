@@ -56,7 +56,7 @@ except pymysql.Error as err:
 
 selectQuery = 'SELECT name, web_link FROM lpd_projects'
 
-selectIndex = 'SELECT name FROM lpd_indexes WHERE dataource_id = %s'
+selectIndex = 'SELECT name FROM lpd_indexes WHERE datasource_id = %s'
 
 insertQuery = 'INSERT INTO lpd_indexes (datasource_id, \
                                          name, \
@@ -79,7 +79,7 @@ hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML,
 projectsCollected = []
 
 try:
-    cursor.execute(selecIndex,(datasource_id))
+    cursor.execute(selectIndex,(datasource_id))
     listOfIndex = cursor.fetchall()
     for index in listOfIndex:
         projName = index[0]
@@ -87,7 +87,7 @@ try:
             
     cursor.execute(selectQuery)
     listOfProjects = cursor.fetchall()
-    print(listOfProjects[0])
+
     for project in listOfProjects:
         name = project[0]
         url = project[1]
