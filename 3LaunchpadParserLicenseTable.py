@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2004-2017 Megan Squire <msquire@elon.edu>
+# and Caroline Frankel
 # License: GPLv3
-# 
-# Contribution from:
-# Caroline Frankel
 #
 # We're working on this at http://flossmole.org - Come help us build
 # an open and accessible repository for data and analyses for free and open
@@ -31,48 +29,50 @@
 # inserts datasource id, name, and license info to license table
 ################################################################
 
-import re
 import sys
 import pymysql
 from bs4 import BeautifulSoup
 
-datasource_id = '122'  # sys.argv[1]
+datasource_id = sys.argv[1]
+dbpasswd = sys.argv[2]
+dbhost = 'flossdata.syr.edu'
+dbuser = 'megan'
+dbschema = 'launchpad'
 
 
 def run():
     try:
         cursor.execute(insertLicensesQuery,
-                   (datasource_id,
-                    name, 
-                    license_info))
+                       (datasource_id,
+                        name,
+                        license_info))
         db.commit()
         print(name, " inserted into licenses table!\n")
     except pymysql.Error as err:
         print(err)
         db.rollback()
-            
+
 
 # establish database connection: SYR
 try:
-    db = pymysql.connect(host='flossdata.syr.edu',
-                     user='',
-                     passwd='',
-                     db='',
-                     use_unicode=True,
-                     charset="utf8mb4")
+    db = pymysql.connect(host=dbhost,
+                         user=dbuser,
+                         passwd=dbpasswd,
+                         db=dbschema,
+                         use_unicode=True,
+                         charset="utf8mb4")
     cursor = db.cursor()
 except pymysql.Error as err:
     print(err)
 
 selectQuery = 'SELECT name, html FROM lpd_indexes'
 
-
 insertLicensesQuery = 'INSERT INTO lpd_licenses (datasource_id, \
                                                  name, \
                                                  license, \
                                                  last_updated) \
                        VALUES(%s, %s, %s, now())'
-                                                 
+
 try:
     cursor.execute(selectQuery)
     listOfProjects = cursor.fetchall()
@@ -86,13 +86,13 @@ try:
 
         try:
             licenseList = soup.find('dl', id='licences')
-            #print(licenseList)
+            # print(licenseList)
             dd = licenseList.find('dd')
-            #print(dd)
+            # print(dd)
             licenseLines = dd.contents[0]
-            #print(licenseLines)
+            # print(licenseLines)
             licenseGroup = licenseLines.strip()
-            #print(licenseGroup)
+            # print(licenseGroup)
             if ',' in licenseGroup:
                 group = licenseGroup.split(',')
                 for g in group:
@@ -106,11 +106,9 @@ try:
                 print('license_info: ', license_info)
                 run()
         except:
-            license_info = None  
+            license_info = None
             print('license_info: NULL')
             run()
-        
 
 except pymysql.Error as err:
     print(err)
-
