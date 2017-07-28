@@ -65,7 +65,11 @@ try:
 except pymysql.Error as err:
     print(err)
 
-selectQuery = 'SELECT name, html FROM lpd_indexes'
+selectQuery = 'SELECT name FROM lpd_indexes WHERE datasource_id = %s'
+
+selectHtmlQuery = 'SELECT html FROM lpd_indexes \
+                    WHERE datasource_id = %s \
+                    AND name = %s'
 
 insertLicensesQuery = 'INSERT INTO lpd_licenses (datasource_id, \
                                                  name, \
@@ -74,12 +78,15 @@ insertLicensesQuery = 'INSERT INTO lpd_licenses (datasource_id, \
                        VALUES(%s, %s, %s, now())'
 
 try:
-    cursor.execute(selectQuery)
+    print('Selecting projects for datasource:', datasource_id)
+    cursor.execute(selectQuery, (datasource_id))
     listOfProjects = cursor.fetchall()
 
     for project in listOfProjects:
         name = project[0]
-        html = project[1]
+
+        cursor.execute(selectHtmlQuery, (datasource_id, name))
+        html = cursor.fetchone()[0]
         print('\nworking on ', name)
 
         soup = BeautifulSoup(html, 'html.parser')
