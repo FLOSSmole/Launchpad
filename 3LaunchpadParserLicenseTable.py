@@ -35,9 +35,9 @@ from bs4 import BeautifulSoup
 
 datasource_id = sys.argv[1]
 dbpasswd = sys.argv[2]
-dbhost = 'flossdata.syr.edu'
-dbuser = 'megan'
-dbschema = 'launchpad'
+dbhost = ''
+dbuser = ''
+dbschema = ''
 
 
 def run():
