@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2004-2017 Megan Squire <msquire@elon.edu>
+# and Caroline Frankel
 # License: GPLv3
 # 
-# Contribution from:
-# Caroline Frankel
 #
 # We're working on this at http://flossmole.org - Come help us build
 # an open and accessible repository for data and analyses for free and open
@@ -25,7 +24,7 @@
 #
 ################################################################
 # usage:
-# python 3LaunchpadParser.py <datasource_id> <password>
+# python 4LaunchpadDetailsParser.py <datasource_id> <password>
 #
 # purpose:
 # inserts collects and inserts information into the projects table
@@ -42,7 +41,11 @@ bug_tracker = None
 driver = None
 description = None
 
-datasource_id = '272' # sys.argv[1]
+datasource_id = sys.argv[1]
+dbpasswd = sys.argv[2]
+dbuser = ''
+dbhost = ''
+dbschema = ''
 
 
 def regexMaker(word):
@@ -75,52 +78,55 @@ def regexMaker3(word, url):
 def run():
     try:
         cursor.execute(updateQuery,
-                   (active,                                 # 1
-                    bug_reported_acknowledgement,           # 2
-                    bug_reporting_guidelines,               # 3
-                    commercial_subscription_is_due,         # 4
-                    date_created,                           # 5
-                    description,                            # 6
-                    download_url,                           # 7
-                    freshmeat_project,                      # 8
-                    homepage_url,                           # 9
-                    qualifies_for_free_hosting,             # 10
-                    screenshots_url,                        # 11
-                    sourceforge_project,                    # 12
-                    summary,                                # 13
-                    title,                                  # 14
-                    wiki_url,                               # 15
-                    bug_supervisor,                         # 16
-                    bug_tracker,                            # 17
-                    development_focus,                      # 18
-                    driver,                                 # 19
-                    owner,                                  # 20
-                    project_group,                          # 21
-                    registrant,                             # 22
-                    translation_focus,                      # 23
-                    datasource_id,                          # 24
-                    name))                                  # 25
+                       (active,                                 # 1
+                        bug_reported_acknowledgement,           # 2
+                        bug_reporting_guidelines,               # 3
+                        commercial_subscription_is_due,         # 4
+                        date_created,                           # 5
+                        description,                            # 6
+                        download_url,                           # 7
+                        freshmeat_project,                      # 8
+                        homepage_url,                           # 9
+                        qualifies_for_free_hosting,             # 10
+                        screenshots_url,                        # 11
+                        sourceforge_project,                    # 12
+                        summary,                                # 13
+                        title,                                  # 14
+                        wiki_url,                               # 15
+                        bug_supervisor,                         # 16
+                        bug_tracker,                            # 17
+                        development_focus,                      # 18
+                        driver,                                 # 19
+                        owner,                                  # 20
+                        project_group,                          # 21
+                        registrant,                             # 22
+                        translation_focus,                      # 23
+                        datasource_id,                          # 24
+                        name))                                  # 25
         db.commit()
         print(name, "inserted into projects table!\n")
     except pymysql.Error as err:
         print(err)
         db.rollback()
-            
 
-# establish database connection: SYR
+
 try:
-    db = pymysql.connect(host='flossdata.syr.edu',
-                     user='',
-                     passwd='',
-                     db='',
-                     use_unicode=True,
-                     charset="utf8mb4")
+    db = pymysql.connect(host=dbhost,
+                         user=dbuser,
+                         passwd=dbpasswd,
+                         db=dbschema,
+                         use_unicode=True,
+                         charset="utf8mb4")
     cursor = db.cursor()
 except pymysql.Error as err:
     print(err)
 
-selectQuery = 'SELECT name, html FROM lpd_indexes'  # WHERE name = "albayanradioindicator" LIMIT 1'
+selectQuery = 'SELECT name FROM lpd_indexes \
+                WHERE datasource_id = %s and name >"appkernel"'
 
+selectHtmlQuery = 'SELECT html FROM lpd_indexes \
+                    WHERE datasource_id = %s \
+                    AND name = %s'
 
 updateQuery = 'UPDATE lpd_projects SET active = %s, \
                                         bug_reported_acknowledgement = %s, \
@@ -146,15 +152,18 @@ updateQuery = 'UPDATE lpd_projects SET active = %s, \
                                         registrant = %s, \
                                         translation_focus = %s, \
                                         last_updated = now() \
-            WHERE datasource_id = %s AND name = %s'
+                WHERE datasource_id = %s AND name = %s'
 
 try:
-    cursor.execute(selectQuery)
+    print('Selecting projects for datasource:', datasource_id)
+    cursor.execute(selectQuery, (datasource_id))
     listOfProjects = cursor.fetchall()
 
     for project in listOfProjects:
         name = project[0]
-        html = project[1]
+
+        cursor.execute(selectHtmlQuery, (datasource_id, name))
+        html = cursor.fetchone()[0]
         print('\nworking on ', name)
 
         soup = BeautifulSoup(html, 'html.parser')
