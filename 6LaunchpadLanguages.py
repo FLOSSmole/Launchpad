@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2004-2017 Megan Squire <msquire@elon.edu>
+# and Caroline Frankel
 # License: GPLv3
-# 
-# Contribution from:
-# Caroline Frankel
 #
 # We're working on this at http://flossmole.org - Come help us build
 # an open and accessible repository for data and analyses for free and open
@@ -25,7 +23,7 @@
 #
 ################################################################
 # usage:
-# python 7LaunchpadParserLanguagetable.py <datasource_id> <password>
+# python 6LaunchpadLanguages.py <datasource_id> <password>
 #
 # purpose:
 # inserts programming language info into the programming language table
@@ -36,7 +34,11 @@ import sys
 import pymysql
 from bs4 import BeautifulSoup
 
-datasource_id = '122'  # sys.argv[1]
+datasource_id = sys.argv[1]
+dbpw = sys.argv[2]
+dbschema = ''
+dbhost = ''
+dbuser = ''
 
 
 def run():
@@ -53,18 +55,21 @@ def run():
 
 # establish database connection: SYR
 try:
-    db = pymysql.connect(host='flossdata.syr.edu',
-                     user='',
-                     passwd='',
-                     db='',
-                     use_unicode=True,
-                     charset="utf8mb4")
+    db = pymysql.connect(host=dbhost,
+                         user=dbuser,
+                         passwd=dbpw,
+                         db=dbschema,
+                         use_unicode=True,
+                         charset="utf8mb4")
     cursor = db.cursor()
 except pymysql.Error as err:
     print(err)
 
-selectQuery = 'SELECT name, html FROM lpd_indexes'
+selectQuery = 'SELECT name, html FROM lpd_indexes \
+                WHERE datasource_id = %s'
 
+selectHtmlQuery = 'SELECT html FROM lpd_indexes \
+                    WHERE datasource_id = %s AND name = %s'
 
 insertProgLangQuery = 'INSERT INTO lpd_programming_language (datasource_id, \
                                                              name, \
@@ -73,12 +78,14 @@ insertProgLangQuery = 'INSERT INTO lpd_programming_language (datasource_id, \
                         VALUES(%s, %s, %s, now())'
 
 try:
-    cursor.execute(selectQuery)
+    cursor.execute(selectQuery, (datasource_id))
     listOfProjects = cursor.fetchall()
 
     for project in listOfProjects:
         name = project[0]
-        html = project[1]
+
+        cursor.execute(selectHtmlQuery, (datasource_id, name))
+        html = cursor.fetchone()[0]
         print('\nworking on ', name)
 
         soup = BeautifulSoup(html, 'html.parser')
