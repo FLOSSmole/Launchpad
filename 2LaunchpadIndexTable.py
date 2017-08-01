@@ -34,7 +34,6 @@
 import sys
 import time
 import pymysql
-from bs4 import BeautifulSoup
 try:
     import urllib.request as urllib2
 except ImportError:
