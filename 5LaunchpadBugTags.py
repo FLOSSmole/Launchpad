@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2004-2017 Megan Squire <msquire@elon.edu>
+# and Caroline Frankel
 # License: GPLv3
 # 
-# Contribution from:
-# Caroline Frankel
-#
 # We're working on this at http://flossmole.org - Come help us build
 # an open and accessible repository for data and analyses for free and open
 # source projects.
@@ -25,7 +23,7 @@
 #
 ################################################################
 # usage:
-# python 6LaunchpadParserBugTagTable.py <datasource_id> <password>
+# python 5LaunchpadBugTags.py <datasource_id> <password>
 #
 # purpose:
 # inserts bug tag information into the bug tag table
@@ -36,40 +34,48 @@ import sys
 import pymysql
 from bs4 import BeautifulSoup
 
-datasource_id = '122'  # sys.argv[1]
+datasource_id = sys.argv[1]
+dbpw = sys.argv[2]
+dbschema = ''
+dbhost = ''
+dbuser = ''
 
 
 def run():
     try:
         cursor.execute(insertBugTagQuery,
                        (datasource_id,
-                        name, 
+                        name,
                         official_bug_tag))
         db.commit()
         print(name, " inserted into bug tag table!\n")
     except pymysql.Error as err:
         print(err)
-        db.rollback()     
+        db.rollback()
+
 
 # establish database connection: SYR
 try:
-    db = pymysql.connect(host='flossdata.syr.edu',
-                     user='',
-                     passwd='',
-                     db='',
-                     use_unicode=True,
-                     charset="utf8mb4")
+    db = pymysql.connect(host=dbhost,
+                         user=dbuser,
+                         passwd=dbpw,
+                         db=dbschema,
+                         use_unicode=True,
+                         charset="utf8mb4")
     cursor = db.cursor()
 except pymysql.Error as err:
     print(err)
 
-selectQuery = 'SELECT name, html FROM lpd_indexes'
+selectQuery = 'SELECT name FROM lpd_indexes \
+                WHERE datasource_id = %s'
 
+selectHtmlQuery = 'SELECT html FROM lpd_indexes \
+                    WHERE datasource_id = %s AND name = %s'
 
 insertBugTagQuery = 'INSERT INTO lpd_official_bug_tags (datasource_id, \
-                                                          name, \
-                                                          official_bug_tag, \
-                                                          last_updated) \
+                                                        name, \
+                                                        official_bug_tag, \
+                                                        last_updated) \
                        VALUES(%s, %s, %s, now())'
 
 try:
@@ -78,7 +84,9 @@ try:
 
     for project in listOfProjects:
         name = project[0]
-        html = project[1]
+
+        cursor.execute(selectHtmlQuery, (datasource_id, name))
+        html = cursor.fetchone()[0]
         print('\nworking on ', name)
 
         soup = BeautifulSoup(html, 'html.parser')
