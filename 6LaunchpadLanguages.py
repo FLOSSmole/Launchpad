@@ -71,7 +71,7 @@ selectQuery = 'SELECT name, html FROM lpd_indexes \
 selectHtmlQuery = 'SELECT html FROM lpd_indexes \
                     WHERE datasource_id = %s AND name = %s'
 
-insertProgLangQuery = 'INSERT INTO lpd_programming_language (datasource_id, \
+insertProgLangQuery = 'INSERT INTO lpd_programming_languages (datasource_id, \
                                                              name, \
                                                              programming_language, \
                                                              last_updated) \
