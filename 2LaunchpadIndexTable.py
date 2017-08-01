@@ -31,8 +31,8 @@
 # inserts datasource id, name, and html to indexes table
 ################################################################
 
-import re
 import sys
+import time
 import pymysql
 from bs4 import BeautifulSoup
 try:
@@ -40,35 +40,45 @@ try:
 except ImportError:
     import urllib2
 
-datasource_id = '122' #sys.argv[1]
+datasource_id = sys.argv[1]
+dbpw = sys.argv[2]
+dbhost = ''
+dbuser = ''
+dbschema = ''
 
-# establish database connection: SYR
-try:
-    db = pymysql.connect(host='flossdata.syr.edu',
-                         user='',
-                         passwd='',
-                         db='',
-                         use_unicode=True,
-                         charset="utf8mb4")
-    cursor = db.cursor()
-except pymysql.Error as err:
-    print(err)
+
+def connectToDb():
+    try:
+        db = pymysql.connect(host=dbhost,
+                             user=dbuser,
+                             passwd=dbpw,
+                             db=dbschema,
+                             use_unicode=True,
+                             charset="utf8mb4")
+    except pymysql.Error as err:
+        print(err)
+    return db
+
+# network issue
+# imagemagick
+
+#mysql error:
+# nunitv2
 
 selectQuery = 'SELECT p.name, p.web_link \
                FROM lpd_projects p \
                LEFT OUTER JOIN lpd_indexes i \
                ON p.name = i.name \
                WHERE i.name IS NULL \
-               AND p.datasource_id = %s'
-
-insertQuery = 'INSERT INTO lpd_indexes (datasource_id, \
+               AND p.datasource_id = %s \
+               AND p.name != "nunitv2"'
+               
+insertQuery = 'INSERT IGNORE INTO lpd_indexes (datasource_id, \
                                          name, \
                                          html, \
                                          milestoneUrl, \
-                                         milestoneHtml, \
                                          milestoneIsActiveUrl, \
                                          seriesUrl, \
-                                         serieshtml, \
                                          date_collected) \
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s, now())'
 
@@ -79,31 +89,25 @@ hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML,
        'Accept-Language': 'en-US,en;q=0.8',
        'Connection': 'keep-alive'}
 
-projectsCollected = []
 
-try:
-    cursor.execute(selectQuery,(datasource_id))
-    listOfProjects = cursor.fetchall()
+db = connectToDb()
+cursor = db.cursor()
+cursor.execute(selectQuery, (datasource_id))
+listOfProjects = cursor.fetchall()
 
-    for project in listOfProjects:
+for project in listOfProjects:
+        time.sleep(2)
         name = project[0]
         url = project[1]
         print('working on', name)
 
-        req = urllib2.Request(url, headers=hdr)
-        projectHtml = urllib2.urlopen(req).read()
-
-        milestoneUrl = url + '/+milestones'
-
-        req2 = urllib2.Request(milestoneUrl, headers=hdr)
-        milestoneHtml = urllib2.urlopen(req2).read()
-
-        milestoneIsActiveUrl = 'https://launchpad.net/api/devel/' + name +'/active_milestones'
-        
-        seriesUrl = url + '/+series'
-
-        req3 = urllib2.Request(seriesUrl, headers=hdr)
-        seriesHtml = urllib2.urlopen(req3).read()
+        try:
+            req = urllib2.Request(url, headers=hdr)
+            projectHtml = urllib2.urlopen(req).read()
+        except urllib2.HTTPError as herr1:
+            print("~~~~~SKIPPING html~~~~~")
+            print(herr1)
+            pass
 
         try:
             cursor.execute(insertQuery,
@@ -111,18 +115,12 @@ try:
                             name,
                             projectHtml,
                             milestoneUrl,
-                            milestoneHtml,
                             milestoneIsActiveUrl,
-                            seriesUrl,
-                            seriesHtml))
+                            seriesUrl))
             db.commit()
             print(name, " inserted into indexes table!\n")
         except pymysql.Error as err:
             print(err)
-            db.rollback()    
-    
-except pymysql.Error as err:
-    print(err)
-
-except urllib2.HTTPError as herror:
-    print(herror)
+            db.rollback()
+        except:
+            pass
